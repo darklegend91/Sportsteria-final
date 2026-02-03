@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import EquipmentTable from "../components/common/EquipmentTable";
 import RequestsTable from "../components/common/RequestsTable";
-import { getStudentEquipments } from "../services/equipmentService";
+import { getStudentEquipments } from "../services/EquipmentService";
 import { createStudentRequest, getStudentRequests } from "../services/requestService";
 
 export default function StudentDashboard() {

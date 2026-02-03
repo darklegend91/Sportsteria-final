@@ -6,7 +6,7 @@ import {
   getAdminEquipments, 
   addEquipment, 
   deleteEquipment 
-} from "../services/equipmentService";
+} from "../services/EquipmentService";
 import { 
   getAllRequestsAdmin, 
   approveRequest, 
