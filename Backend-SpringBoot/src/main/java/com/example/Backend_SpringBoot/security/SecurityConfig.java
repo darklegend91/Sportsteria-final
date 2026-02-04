@@ -69,11 +69,13 @@ public class SecurityConfig {
                             "/auth/login",
                             "/auth/**",
                             "/api/auth/**",
-                            "/"
+                            "/",
+                            "/equipments",
+                            "/api/equipments"
                         ).permitAll()
                         .requestMatchers("/api/equipments").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/student/**").hasRole("STUDENT")
+                        .requestMatchers("/api/student/**", "/requests/student/**").hasRole("STUDENT")
+                        .requestMatchers("/api/admin/**", "/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
