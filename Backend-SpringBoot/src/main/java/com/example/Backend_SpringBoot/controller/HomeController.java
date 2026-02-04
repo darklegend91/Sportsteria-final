@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Simple home endpoint so that visiting http://localhost:8095/ shows a quick status message.
+ * Simple home endpoint so that visiting http://localhost:8080/ shows a quick status message.
  */
 @RestController
 public class HomeController {
