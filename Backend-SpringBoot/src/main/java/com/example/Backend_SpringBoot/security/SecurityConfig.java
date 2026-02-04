@@ -64,7 +64,13 @@ public class SecurityConfig {
                 }) // enable CORS
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/api/auth/**").permitAll()   // allow root and login/signup
+                        .requestMatchers(
+                            "/auth/signup",
+                            "/auth/login",
+                            "/auth/**",
+                            "/api/auth/**",
+                            "/"
+                        ).permitAll()
                         .requestMatchers("/api/equipments").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/student/**").hasRole("STUDENT")

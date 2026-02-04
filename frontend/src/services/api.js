@@ -10,8 +10,20 @@ const api = axios.create({
 
 api.interceptors.request.use(cfg => {
   const token = localStorage.getItem("token");
-  
-  if (token) cfg.headers.Authorization = `Bearer ${token}`;
+
+  // Don't attach Authorization header for auth endpoints (supports both /auth and /api/auth)
+  // Handles both relative URLs (e.g. "/auth/signup") and absolute URLs.
+  const url = cfg.url || "";
+  let path = url;
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    try { path = new URL(url).pathname; } catch (e) { /* leave as-is */ }
+  }
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+  if (token && !normalizedPath.startsWith("/auth") && !normalizedPath.startsWith("/api/auth")) {
+    cfg.headers = cfg.headers || {};
+    cfg.headers.Authorization = `Bearer ${token}`;
+  }
   return cfg;
 });
 
