@@ -1,12 +1,24 @@
 import axios from "axios";
 
-// Read backend base URL from Vite env variable (VITE_API_URL)
-// - Local: Set in .env file
-// - Production: Set in .env.production or CI/CD environment
-// Fallback for local dev: http://localhost:8095/api
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8095/api";
+// Determine BASE_URL based on environment
+let BASE_URL;
 
-// Debug: Log the base URL being used (can be removed in production)
+// Try to get from environment variable first (set via .env or CI/CD)
+if (import.meta.env.VITE_API_URL) {
+  BASE_URL = import.meta.env.VITE_API_URL;
+} else if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+  // Local development fallback
+  BASE_URL = "http://localhost:8095/api";
+} else {
+  // Production fallback - use the same domain as frontend
+  BASE_URL = `${window.location.origin}/api`;
+  // But override with known production backend URL if on Vercel/production domain
+  if (window.location.hostname.includes('sportsteria') || window.location.hostname.includes('vercel')) {
+    BASE_URL = "https://peaceful-prosperity-production.up.railway.app/api";
+  }
+}
+
+// Debug: Log the base URL being used
 console.log("API Base URL:", BASE_URL);
 
 const api = axios.create({
