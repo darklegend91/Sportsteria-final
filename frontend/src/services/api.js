@@ -1,7 +1,13 @@
 import axios from "axios";
 
-// Read backend base URL from Vite env (VITE_API_URL). Keep the fallback for local dev.
+// Read backend base URL from Vite env variable (VITE_API_URL)
+// - Local: Set in .env file
+// - Production: Set in .env.production or CI/CD environment
+// Fallback for local dev: http://localhost:8095/api
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8095/api";
+
+// Debug: Log the base URL being used (can be removed in production)
+console.log("API Base URL:", BASE_URL);
 
 const api = axios.create({
   baseURL: BASE_URL,
