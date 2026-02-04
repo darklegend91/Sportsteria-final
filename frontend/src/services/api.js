@@ -10,11 +10,16 @@ if (import.meta.env.VITE_API_URL) {
   // Local development fallback
   BASE_URL = "http://localhost:8095/api";
 } else {
-  // Production fallback - use the same domain as frontend
-  BASE_URL = `${window.location.origin}/api`;
-  // But override with known production backend URL if on Vercel/production domain
-  if (window.location.hostname.includes('sportsteria') || window.location.hostname.includes('vercel')) {
-    BASE_URL = "https://peaceful-prosperity-production.up.railway.app/api";
+  // Production fallback - default to known production backend
+  BASE_URL = "https://peaceful-prosperity-production.up.railway.app/api";
+}
+
+// Ensure /api path is present (handle case where env var is set without it)
+if (BASE_URL && !BASE_URL.endsWith("/api")) {
+  if (BASE_URL.endsWith("/")) {
+    BASE_URL = BASE_URL + "api";
+  } else {
+    BASE_URL = BASE_URL + "/api";
   }
 }
 
