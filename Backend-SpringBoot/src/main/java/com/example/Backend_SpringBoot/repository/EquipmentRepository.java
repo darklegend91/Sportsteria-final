@@ -10,6 +10,6 @@ public interface EquipmentRepository extends JpaRepository<Equipment, Long> {
     Equipment findByName(String name);
     
     // Case-insensitive search for equipment
-    @Query("SELECT e FROM Equipment e WHERE LOWER(TRIM(e.name)) = LOWER(TRIM(?1))")
+    @Query("SELECT e FROM Equipment e WHERE LOWER(e.name) = LOWER(?1)")
     Equipment findByNameIgnoreCase(String name);
 }
