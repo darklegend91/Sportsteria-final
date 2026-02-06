@@ -57,4 +57,14 @@ public class JwtTokenProvider {
         String username = getUsernameFromToken(token);
         return username != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
+
+    public String getRoleFromToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder().setSigningKey(getSigningKey()).build()
+                    .parseClaimsJws(token).getBody();
+            return (String) claims.get("role");
+        } catch (JwtException e) {
+            return null;
+        }
+    }
 }

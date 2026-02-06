@@ -60,4 +60,11 @@ public class EquipmentService {
     public void delete(Long id) {
         equipmentRepository.deleteById(id);
     }
+
+    public Equipment updateEquipmentQuantity(Long id, int newQuantity) {
+        Equipment equipment = equipmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Equipment not found with id: " + id));
+        equipment.setTotalQuantity(newQuantity);
+        return equipmentRepository.save(equipment);
+    }
 }

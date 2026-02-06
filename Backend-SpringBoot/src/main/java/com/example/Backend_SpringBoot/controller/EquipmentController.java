@@ -55,6 +55,12 @@ public class EquipmentController {
         return ResponseEntity.ok(saved);
     }
 
+    @PutMapping("/admin/equipments/{id}")
+    public ResponseEntity<Equipment> updateEquipment(@PathVariable Long id, @RequestBody Equipment equipment) {
+        Equipment updated = equipmentService.updateEquipmentQuantity(id, equipment.getTotalQuantity());
+        return ResponseEntity.ok(updated);
+    }
+
     @DeleteMapping("/admin/equipments/{id}")
     public void delete(@PathVariable Long id) {
         equipmentService.delete(id);

@@ -64,6 +64,7 @@ public class SecurityConfig {
                 }) // enable CORS
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Public endpoints
                         .requestMatchers(
                             "/auth/signup",
                             "/auth/login",
@@ -73,9 +74,16 @@ public class SecurityConfig {
                             "/equipments",
                             "/api/equipments"
                         ).permitAll()
-                        .requestMatchers("/api/equipments").permitAll()
-                        .requestMatchers("/api/student/**", "/requests/student/**").hasRole("STUDENT")
-                        .requestMatchers("/api/admin/**", "/admin/**").hasRole("ADMIN")
+                        
+                        // Student endpoints - require STUDENT role
+                        .requestMatchers("/api/student/**").hasRole("STUDENT")
+                        .requestMatchers("/requests/student/**").hasRole("STUDENT")
+                        
+                        // Admin endpoints - require ADMIN role (both GET, POST, PUT, DELETE)
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        
+                        // All other requests require authentication
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
