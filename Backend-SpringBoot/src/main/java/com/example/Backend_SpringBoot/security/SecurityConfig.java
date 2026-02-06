@@ -47,7 +47,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173", "https://sportsteria.vercel.app")
+                        .allowedOrigins("http://localhost:5173", "https://sportsteria.vercel.app", "https://sportsteria-git-main-darklegend91s-projects.vercel.app", "https://sportsteria-final.onrender.com")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true)

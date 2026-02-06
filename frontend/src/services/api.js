@@ -8,10 +8,10 @@ if (import.meta.env.VITE_API_URL) {
   BASE_URL = import.meta.env.VITE_API_URL;
 } else if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
   // Local development fallback
-  BASE_URL = "http://localhost:8095/api";
+  BASE_URL = "http://localhost:8080/api";
 } else {
   // Production fallback - default to known production backend
-  BASE_URL = "https://peaceful-prosperity-production.up.railway.app/api";
+  BASE_URL = "https://sportsteria-final.onrender.com/api";
 }
 
 // Ensure /api path is present (handle case where env var is set without it)
