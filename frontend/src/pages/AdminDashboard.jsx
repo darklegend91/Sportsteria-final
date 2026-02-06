@@ -23,11 +23,15 @@ export default function AdminDashboard() {
   const [error, setError] = useState(null);
   const { user } = useAuth();
 
+  // Track if initial load is complete to avoid redundant API calls
+  const [initialized, setInitialized] = useState(false);
+
   const loadEquipments = async () => {
     setLoadingEquip(true);
     try {
       const res = await getAdminEquipments();
       setEquipments(res.data || []);
+      setError(null);
     } catch (err) {
       console.error("Error loading equipments:", err);
       setError("Failed to load equipments");
@@ -41,6 +45,7 @@ export default function AdminDashboard() {
     try {
       const res = await getAllRequestsAdmin();
       setRequests(res.data || []);
+      setError(null);
     } catch (err) {
       console.error("Error loading requests:", err);
       setError("Failed to load requests");
@@ -49,14 +54,14 @@ export default function AdminDashboard() {
     }
   };
 
-  const loadAll = async () => {
-    setError(null);
-    await Promise.all([loadEquipments(), loadRequests()]);
-  };
-
+  // Initial load: fetch both equipments and requests once on mount
   useEffect(() => {
-    loadAll();
-  }, []);
+    if (!initialized) {
+      Promise.all([loadEquipments(), loadRequests()]).then(() => {
+        setInitialized(true);
+      });
+    }
+  }, [initialized]);
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -68,6 +73,7 @@ export default function AdminDashboard() {
     try {
       await addEquipment(newItem);
       setNewItem({ name: "", totalQuantity: 1 });
+      // Refetch only equipments after add, not requests
       await loadEquipments();
       alert("Equipment added successfully! If the item already existed, quantities have been combined.");
       setError(null);
@@ -81,6 +87,7 @@ export default function AdminDashboard() {
     if (!window.confirm("Are you sure you want to delete this equipment?")) return;
     try {
       await deleteEquipment(id);
+      // Refetch only equipments after delete
       await loadEquipments();
       alert("Equipment deleted successfully!");
     } catch (err) {
@@ -97,11 +104,16 @@ export default function AdminDashboard() {
     
     try {
       await updateEquipmentQuantity(id, newQuantity);
-      await loadEquipments();
-      alert("Quantity updated successfully!");
+      // Optimistically update UI immediately instead of refetching all
+      setEquipments(prev => 
+        prev.map(eq => eq.id === id ? { ...eq, totalQuantity: newQuantity } : eq)
+      );
+      setError(null);
     } catch (err) {
       console.error("Error updating quantity:", err);
       setError("Failed to update equipment quantity");
+      // Refetch on error to ensure UI is in sync
+      await loadEquipments();
     }
   };
 
@@ -120,22 +132,34 @@ export default function AdminDashboard() {
   const handleApprove = async (id) => {
     try {
       await approveRequest(id);
-      await loadRequests();
+      // Optimistically update UI - change request status to APPROVED
+      setRequests(prev => 
+        prev.map(req => req.id === id ? { ...req, status: 'APPROVED' } : req)
+      );
       alert("Request approved!");
+      setError(null);
     } catch (err) {
       console.error("Error approving request:", err);
       setError("Failed to approve request");
+      // Refetch on error
+      await loadRequests();
     }
   };
 
   const handleReject = async (id) => {
     try {
       await rejectRequest(id);
-      await loadRequests();
+      // Optimistically update UI - change request status to REJECTED
+      setRequests(prev => 
+        prev.map(req => req.id === id ? { ...req, status: 'REJECTED' } : req)
+      );
       alert("Request rejected!");
+      setError(null);
     } catch (err) {
       console.error("Error rejecting request:", err);
       setError("Failed to reject request");
+      // Refetch on error
+      await loadRequests();
     }
   };
 
