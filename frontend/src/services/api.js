@@ -8,20 +8,12 @@ if (import.meta.env.VITE_API_URL) {
   BASE_URL = import.meta.env.VITE_API_URL;
 } else if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
   // Local development fallback
-  BASE_URL = "http://localhost:8080/api";
+  BASE_URL = "http://localhost:8080";
 } else {
   // Production fallback - default to known production backend
-  BASE_URL = "https://sportsteria-final.onrender.com/api";
+  BASE_URL = "https://sportsteria-final.onrender.com";
 }
 
-// Ensure /api path is present (handle case where env var is set without it)
-if (BASE_URL && !BASE_URL.endsWith("/api")) {
-  if (BASE_URL.endsWith("/")) {
-    BASE_URL = BASE_URL + "api";
-  } else {
-    BASE_URL = BASE_URL + "/api";
-  }
-}
 
 // Debug: Log the base URL being used
 console.log("API Base URL:", BASE_URL);
@@ -34,8 +26,6 @@ const api = axios.create({
 api.interceptors.request.use(cfg => {
   const token = localStorage.getItem("token");
 
-  // Don't attach Authorization header for auth endpoints (supports both /auth and /api/auth)
-  // Handles both relative URLs (e.g. "/auth/signup") and absolute URLs.
   const url = cfg.url || "";
   let path = url;
   if (url.startsWith("http://") || url.startsWith("https://")) {
